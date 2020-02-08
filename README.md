@@ -1,11 +1,16 @@
-# My Personal Project
+# My Personal CPSC 210 Project
 
-## A subtitle
+## An Inventory Management System
 
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
+The **Inventory Management System** is a program that will allow the user(s) to record stock for the 
+games section of the *Richmond Night Market*. 
 
-An example of text with **bold** and *italic* fonts.  Note that the IntelliJ markdown previewer doesn't seem to render 
-the bold and italic fonts correctly but they will appear correctly on GitHub.
+The user will be able to: 
+- record stock bag information
+- view a map of the storage containers 
+- view logistical information regarding stock specfically for each game 
+
+This program will mainly be used by myself, as I am working as the *Inventory Manager* for the *Richmond
+Night Markets games section*. This project is interesting to me because there is no current tracking 
+system in place, so this program will allow me to track all of our inventory and easily locate stock
+that is needed on an operations night.
