@@ -14,3 +14,21 @@ This program will mainly be used by myself, as I am working as the *Inventory Ma
 Night Markets games section*. This project is interesting to me because there is no current tracking 
 system in place, so this program will allow me to track all of our inventory and easily locate stock
 that is needed on an operations night.
+
+## User Stories
+
+As a user, I want to be able to record a stock bag and its information into a storage container.  
+This includes:  
+- Bag number  
+- Size of prize  
+- Total quantity of stock in bag  
+- Which game the stock is for  
+
+As a user, I want to be able to view a map of a storage container.
+
+As a user, I want to be able to view all logistical stock bag information about each game.  
+This includes:  
+- All the bags specified for each game and their information
+- Which storage container each bag is stored in
+		
+As a user, I want to be able to remove a stock bag from a container.
