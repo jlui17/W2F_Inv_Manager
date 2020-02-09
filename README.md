@@ -19,16 +19,14 @@ that is needed on an operations night.
 
 As a user, I want to be able to record a stock bag and its information into a storage container.  
 This includes:  
+- Description of stock  
 - Bag number  
 - Size of prize  
 - Total quantity of stock in bag  
 - Which game the stock is for  
 
 As a user, I want to be able to view a map of a storage container.
-
-As a user, I want to be able to view all logistical stock bag information about each game.  
-This includes:  
-- All the bags specified for each game and their information
-- Which storage container each bag is stored in
 		
+As a user, I want to be able to move a stock bag from one container to another.
+
 As a user, I want to be able to remove a stock bag from a container.
