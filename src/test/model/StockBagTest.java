@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StockBagTest {
     StockBag bag;
+    String bagInfo;
 
     @BeforeEach
     void runBefore() {
@@ -26,5 +27,11 @@ class StockBagTest {
     void testChangeGame() {
         bag.changeGame("Basketball");
         assertEquals("Basketball", bag.getGame());
+    }
+
+    @Test
+    void testToString() {
+        bagInfo = "Kaws|1234|4|400|Birthday";
+        assertEquals(bagInfo, bag.toString());
     }
 }

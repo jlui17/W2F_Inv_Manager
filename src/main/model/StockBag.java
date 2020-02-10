@@ -54,4 +54,9 @@ public class StockBag {
     public String getGame() {
         return game;
     }
+
+    public String toString() {
+        String bagInfo = description + "|" + number + "|" + size + "|" + quantity + "|" + game;
+        return bagInfo;
+    }
 }
