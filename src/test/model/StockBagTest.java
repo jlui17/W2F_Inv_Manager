@@ -40,7 +40,7 @@ class StockBagTest {
         StockBag bag1 = new StockBag("Kaws", 1111, 4, 100, "Basketball");
         StockBag bag2 = new StockBag("Kaws", 1111, 4, 100, "Basketball");
         assertTrue(bag1.equals(bag2));
-        StockBag bag3 = new StockBag("Not Kaws", 1111, 4, 100, "Basketball");
+        StockBag bag3 = new StockBag("Not Kaws", 2222, 3, 10, "Birthday");
         assertFalse(bag1.equals(bag3));
         assertTrue(bag1.equals(bag1));
         assertFalse(bag1.equals(null));

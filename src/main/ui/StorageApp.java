@@ -55,8 +55,8 @@ public class StorageApp {
     }
 
     // MODIFIES: this
-    // EFFECTS: loads accounts from ACCOUNTS_FILE, if that file exists;
-    // otherwise initializes accounts with default values
+    // EFFECTS: loads containers from SAVE_FILE, if that file exists;
+    // otherwise initializes containers as empty
     private void loadContainers() {
         try {
             List<Container> containers = Reader.readContainers(new File(SAVE_FILE));
@@ -68,7 +68,7 @@ public class StorageApp {
         }
     }
 
-    // EFFECTS: saves state of chequing and savings accounts to ACCOUNTS_FILE
+    // EFFECTS: saves state of containerA and containerB to SAVE_FILE
     private void saveContainers() {
         try {
             Writer writer = new Writer(new File(SAVE_FILE));

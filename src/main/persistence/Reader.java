@@ -16,7 +16,7 @@ import java.util.List;
 public class Reader {
     public static final String DELIMITER = ",";
 
-    // EFFECTS: returns a list of accounts parsed from file; throws
+    // EFFECTS: returns a list of containers parsed from file; throws
     // IOException if an exception is raised when opening / reading from file
     public static List<Container> readContainers(File file) throws IOException {
         List<String> fileContent = readFile(file);
@@ -29,7 +29,7 @@ public class Reader {
         return Files.readAllLines(file.toPath());
     }
 
-    // EFFECTS: returns a list of accounts parsed from list of strings
+    // EFFECTS: returns a list of containers parsed from list of strings
     // where each string contains data for one account
     private static ArrayList<Container> parseContent(List<String> fileContent) {
         Container containerA = new Container();
@@ -59,11 +59,11 @@ public class Reader {
         return new ArrayList<>(Arrays.asList(splits));
     }
 
-    // REQUIRES: components has size 4 where element 0 represents the
-    // id of the next account to be constructed, element 1 represents
-    // the id, elements 2 represents the name and element 3 represents
-    // the balance of the account to be constructed
-    // EFFECTS: returns an account constructed from components
+    // REQUIRES: components has size 5 where element 0 represents the
+    // description of the bag to be constructed, element 1 represents
+    // the id number, elements 2 represents the size and element 3 represents
+    // the quantity of prizes in the bag, and element 4 represents the game
+    // EFFECTS: returns an StockBag constructed from components
     private static StockBag parseStockBag(List<String> components) {
         String description = components.get(0);
         int number = Integer.parseInt(components.get(1));
