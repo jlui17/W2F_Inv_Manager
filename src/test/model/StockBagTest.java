@@ -45,5 +45,10 @@ class StockBagTest {
         assertTrue(bag1.equals(bag1));
         assertFalse(bag1.equals(null));
         assertFalse(bag1.equals(new Container()));
+        assertFalse(bag1.equals(new StockBag("kdanalwkdn", 1111, 4 ,100,"Basketball")));
+        assertFalse(bag1.equals(new StockBag("Kaws",1111, 4, 100, "Akdnawlkd")));
+        assertFalse(bag1.equals(new StockBag("Kaws",1234, 4, 100, "Basketball")));
+        assertFalse(bag1.equals(new StockBag("Kaws",1111, 1, 100, "Basketball")));
+        assertFalse(bag1.equals(new StockBag("Kaws",1111, 4, 8, "Basketball")));
     }
 }

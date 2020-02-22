@@ -16,6 +16,10 @@ import java.util.List;
 public class Reader {
     public static final String DELIMITER = ",";
 
+    public Reader() {
+        // do nothing
+    }
+
     // EFFECTS: returns a list of containers parsed from file; throws
     // IOException if an exception is raised when opening / reading from file
     public static List<Container> readContainers(File file) throws IOException {
