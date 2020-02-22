@@ -30,3 +30,7 @@ As a user, I want to be able to view a map of a storage container.
 As a user, I want to be able to move a stock bag from one container to another.
 
 As a user, I want to be able to remove a stock bag from a container.
+
+As a user, I want to be able to load the last save on startup.
+
+As a user, I want to be able to save whenever I quit out of the application.
