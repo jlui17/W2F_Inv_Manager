@@ -2,11 +2,18 @@ package ui;
 
 import model.Container;
 import model.StockBag;
+import persistence.Reader;
+import persistence.Saveable;
+import persistence.Writer;
 
+import java.io.*;
+import java.util.List;
 import java.util.Scanner;
 
 // Inventory Management Application
 public class StorageApp {
+
+    private static final String SAVE_FILE = "./data/save.txt";
 
     private Scanner input;
     private StockBag bag;
@@ -30,9 +37,7 @@ public class StorageApp {
         boolean running = true;
         int command = 0;
         input = new Scanner(System.in);
-        containerA = new Container();
-        containerB = new Container();
-
+        loadContainers();
         System.out.println("Welcome to the Inventory Management Application!");
         while (running) {
             displayMenu();
@@ -45,8 +50,43 @@ public class StorageApp {
                 processCommand(command);
             }
         }
-
+        saveContainers();
         System.out.println("Exiting... goodbye!");
+    }
+
+    // MODIFIES: this
+    // EFFECTS: loads accounts from ACCOUNTS_FILE, if that file exists;
+    // otherwise initializes accounts with default values
+    private void loadContainers() {
+        try {
+            List<Container> containers = Reader.readContainers(new File(SAVE_FILE));
+            containerA = containers.get(0);
+            containerB = containers.get(1);
+        } catch (IOException e) {
+            containerA = new Container();
+            containerB = new Container();
+        }
+    }
+
+    // EFFECTS: saves state of chequing and savings accounts to ACCOUNTS_FILE
+    private void saveContainers() {
+        try {
+            Writer writer = new Writer(new File(SAVE_FILE));
+            for (int i = 1; i <= containerA.getSize(); i++) {
+                writer.write(containerA.getBag(i));
+            }
+            writer.nextContainer();
+            for (int i = 1; i <= containerB.getSize(); i++) {
+                writer.write(containerB.getBag(i));
+            }
+            writer.close();
+            System.out.println("Accounts saved to file " + SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to save accounts to " + SAVE_FILE);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        // this is due to a programming error
+        }
     }
 
     private void displayMenu() {

@@ -33,7 +33,9 @@ public class ContainerTest {
 
     @Test
     void testAddMultipleBags() {
+        assertEquals(0, container.getSize());
         container.addBag(bag);
+        assertEquals(1, container.getSize());
         container.addBag(bag1);
         assertEquals(2, container.getAmountOfStockBags());
 

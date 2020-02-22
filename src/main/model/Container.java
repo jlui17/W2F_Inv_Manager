@@ -1,5 +1,6 @@
 package model;
 
+
 import java.util.ArrayList;
 
 // Represents a storage container that stores stock bags.
@@ -119,6 +120,7 @@ public class Container {
         return container;
     }
 
+    // prints a view of a container when container is full
     public void printMaxRows() {
         int limit = 3;
         for (int i = 9; i > 0; i--) {
@@ -133,5 +135,10 @@ public class Container {
             }
             limit--;
         }
+    }
+
+    // EFFECTS: returns number of storage bags in container
+    public int getSize() {
+        return storage.size();
     }
 }
