@@ -98,9 +98,4 @@ public class StockBag implements Saveable {
                 &&
                 Objects.equals(game, stockBag.game);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(description, number, size, quantity, game);
-    }
 }

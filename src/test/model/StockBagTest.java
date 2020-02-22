@@ -34,4 +34,16 @@ class StockBagTest {
         bagInfo = "Kaws|1234|4|400|Birthday";
         assertEquals(bagInfo, bag.toString());
     }
+
+    @Test
+    void testEquals() {
+        StockBag bag1 = new StockBag("Kaws", 1111, 4, 100, "Basketball");
+        StockBag bag2 = new StockBag("Kaws", 1111, 4, 100, "Basketball");
+        assertTrue(bag1.equals(bag2));
+        StockBag bag3 = new StockBag("Not Kaws", 1111, 4, 100, "Basketball");
+        assertFalse(bag1.equals(bag3));
+        assertTrue(bag1.equals(bag1));
+        assertFalse(bag1.equals(null));
+        assertFalse(bag1.equals(new Container()));
+    }
 }
