@@ -7,7 +7,7 @@ import java.util.ArrayList;
 // The container holds up to 9 bags in a stack of 3 bags and 3 rows and stacks (3x3).
 // Position 1 is the bottom right corner, position 9 is the top left corner.
 // 9 | 8 | 7
-// 4 | 5 | 6
+// 6 | 5 | 4
 // 3 | 2 | 1
 public class Container {
     private static final int MAX_SIZE = 9;
@@ -106,7 +106,7 @@ public class Container {
         } else {
             for (int i = storage.size(); i > 0; i--) {
                 if (limit == 0) {
-                    container += "\n";
+                    container += "<br>";
                     limit = 3;
                 }
                 if (!(i == 1 || i == 4 || i == 7)) {
@@ -125,7 +125,7 @@ public class Container {
         int limit = 3;
         for (int i = 9; i > 0; i--) {
             if (limit == 0) {
-                container += "\n";
+                container += "<br>";
                 limit = 3;
             }
             if (!(i == 1 || i == 4 || i == 7)) {

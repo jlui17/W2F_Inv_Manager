@@ -14,7 +14,7 @@ public class StockBag implements Saveable {
     private int quantity;
     private String game;
 
-    /* REQUIRES: number is of length 4
+    /* REQUIRES: number is of length 4 and is unique
                  size >= 1 and size <= 4
                  quantity is >= 0
        MODIFIES: this
