@@ -33,4 +33,4 @@ As a user, I want to be able to remove a stock bag from a container.
 
 As a user, I want to be able to load the last save of containers on startup.
 
-As a user, I want to be able to save each container whenever I quit out of the application.
+As a user, I want to be able to save each container whenever I click the save button.

@@ -1,18 +1,15 @@
 package ui;
 
-import com.sun.prism.impl.Disposer;
 import model.Container;
 import model.StockBag;
 import persistence.Reader;
-import persistence.Saveable;
 import persistence.Writer;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.*;
 import java.util.List;
 import java.util.Scanner;
@@ -34,76 +31,156 @@ public class StorageApp extends JPanel {
     private String choice;
 
     private JFrame main;
+    private String img;
+    private JButton record;
+    private JButton move;
+    private JButton delete;
+    private JButton viewA;
+    private JButton viewB;
+    private JButton save;
+    private JButton load;
+
 
     // EFFECTS: runs the Inventory Management application
     public StorageApp() {
-        loadContainers();
+        initiateStartProcesses();
+        initiateRecordButton();
+        initiateMoveButton();
+        initiateDeleteButton();
+        initiateViewAButton();
+        initiateViewBButton();
+        initiateSaveButton();
+        initiateLoadButton();
+
+        addToFrame();
+        //runApp();
+    }
+
+    private void initiateStartProcesses() {
+        containerA = new Container();
+        containerB = new Container();
         main = new JFrame("Storage App");
         main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         main.setLocationRelativeTo(null); //centers in middle of screen
         main.getContentPane().setLayout(new BoxLayout(main.getContentPane(), BoxLayout.Y_AXIS));
+    }
 
-        JButton record = new JButton("Record a stock bag");
+    private void initiateRecordButton() {
+        record = new JButton("Record a stock bag");
         record.setAlignmentX(Component.CENTER_ALIGNMENT);
         record.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                playSound();
                 recordStockBag();
             }
         });
+    }
 
-        JButton move = new JButton("Move a stock back from one container to another");
+    private void initiateMoveButton() {
+        move = new JButton("Move a stock back from one container to another");
         move.setAlignmentX(Component.CENTER_ALIGNMENT);
         move.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                playSound();
                 moveStockBag();
             }
         });
+    }
 
-        JButton delete = new JButton("Delete a stock bag");
+    private void initiateDeleteButton() {
+        delete = new JButton("Delete a stock bag");
         delete.setAlignmentX(Component.CENTER_ALIGNMENT);
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                playSound();
                 deleteStockBag();
             }
         });
+    }
 
-        JButton viewA = new JButton("View a container A");
+    private void initiateViewAButton() {
+        viewA = new JButton("View a container A");
         viewA.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewA.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                playSound();
                 displayMessage(containerA.toString());
             }
         });
+    }
 
-        JButton viewB = new JButton("View a container B");
+    private void initiateViewBButton() {
+        viewB = new JButton("View a container B");
         viewB.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewB.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                playSound();
                 displayMessage(containerB.toString());
             }
         });
+    }
 
-        main.addWindowListener(new WindowAdapter() {
+    private void initiateSaveButton() {
+        save = new JButton("Save");
+        save.setAlignmentX(Component.CENTER_ALIGNMENT);
+        save.addActionListener(new ActionListener() {
             @Override
-            public void windowClosing(WindowEvent e) {
+            public void actionPerformed(ActionEvent e) {
+                playSound();
                 saveContainers();
-                displayMessage("Saved containers.");
             }
         });
+    }
 
+    private void initiateLoadButton() {
+        load = new JButton("Load Containers");
+        load.setAlignmentX(Component.CENTER_ALIGNMENT);
+        load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                playSound();
+                loadContainers();
+                displayMessage("Containers loaded.");
+            }
+        });
+    }
+
+    private void addToFrame() {
+        img = "C:\\Users\\speew\\IdeaProjects\\project_x8z2b\\data\\logo.png";
+        JLabel image = new JLabel(new ImageIcon(img));
         main.add(record);
         main.add(move);
         main.add(delete);
         main.add(viewA);
         main.add(viewB);
+        main.add(save);
+        main.add(load);
+        main.add(image);
         main.pack();
         main.setVisible(true);
-        //runApp();
+    }
+
+    private void playSound() {
+        File soundFile = new File("./data/hmm.wav");
+        try { // Open an audio input stream.
+              AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+              // Get a sound clip resource.
+              Clip clip = AudioSystem.getClip();
+            // Open audio clip and load samples from the audio input stream.
+            clip.open(audioIn);
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
     }
 
     // MODIFIES: this
