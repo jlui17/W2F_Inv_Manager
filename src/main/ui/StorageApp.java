@@ -12,23 +12,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.List;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 // Inventory Management Application
 public class StorageApp extends JPanel {
 
     private static final String SAVE_FILE = "./data/save.txt";
 
-    private Scanner input;
+//    private Scanner input;
     private StockBag bag;
-    private String description;
-    private int number;
-    private int size;
-    private int quantity;
-    private String game;
+//    private String description;
+//    private int number;
+//    private int size;
+//    private int quantity;
+//    private String game;
     private Container containerA;
     private Container containerB;
-    private String choice;
+//    private String choice;
 
     private JFrame main;
     private String img;

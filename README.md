@@ -34,3 +34,38 @@ As a user, I want to be able to remove a stock bag from a container.
 As a user, I want to be able to load the last save of containers on startup.
 
 As a user, I want to be able to save each container whenever I click the save button.
+
+## How to Use
+
+As described previously, this program is a inventory management system that tracks what bags of prizes are stored in which 
+container at the Richmond Night Market. The functions are very simple and can be used as follows:
+
+The user has 2 different containers that stock bags can be stored into: containers A and B.
+
+1. Record a stock bag
+	This function creates a stock bag and stores it inside a container. To use it properly, you must enter a UNIQUE four-digit
+	ID for the bag you're creating, and either "A or a" or "B or b" in the container field. The other fields can be any respective
+	string or int.
+	
+2. Move a stock bag
+	This function moves a stock bag from its current container to the other. As long as each bag has a UNIQUE ID, the function will
+	find that bag, and if it's in container A it will be moved to container B, and vice versa.
+	
+3. Delete a stock bag
+	This function completely removes a stock bag from any container. 
+	
+4. View container A
+	This function displays a non-interactive map of container A. There can be up to 9 different bags in each container, and they're
+	stored in an order like this:
+	9|8|7
+	6|5|4
+	3|2|1
+	
+5. View container B
+	This function is the same as "View container A" but displays container B.
+	
+6. Save
+	This functions saves all containers and the stock bags inside them.
+	
+7. Load
+	This function loads any previously saved containers and stock bags inside them back into the running program.
