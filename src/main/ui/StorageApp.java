@@ -168,9 +168,9 @@ public class StorageApp extends JPanel {
     private void playSound() {
         File soundFile = new File("./data/hmm.wav");
         try { // Open an audio input stream.
-              AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
               // Get a sound clip resource.
-              Clip clip = AudioSystem.getClip();
+            Clip clip = AudioSystem.getClip();
             // Open audio clip and load samples from the audio input stream.
             clip.open(audioIn);
             clip.start();
