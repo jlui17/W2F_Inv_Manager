@@ -1,7 +1,10 @@
 package model;
 
 
+import model.Exceptions.DuplicateIDException;
+
 import java.util.ArrayList;
+import java.util.List;
 
 // Represents a storage container that stores stock bags.
 // The container holds up to 9 bags in a stack of 3 bags and 3 rows and stacks (3x3).
@@ -15,18 +18,25 @@ public class Container {
     private ArrayList<StockBag> storage;
     private int indexOfStockBag;
     private String container;
+    private ArrayList<Integer> listOfIDs;
 
     // EFFECTS: creates a new empty container
     public Container() {
         storage = new ArrayList<>();
+        listOfIDs = new ArrayList<>();
     }
 
     // REQUIRES: bag ID isn't same as any other bag in storage
     // MODIFIES: this
     // EFFECTS: adds stock bag into storage
-    public void addBag(StockBag bag) {
+    public void addBag(StockBag bag) throws DuplicateIDException{
         if (!(storage.size() >= MAX_SIZE)) {
-            storage.add(bag);
+            if (!listOfIDs.contains(bag.getBagNumber())) {
+                storage.add(bag);
+                listOfIDs.add(bag.getBagNumber());
+            } else {
+                throw new DuplicateIDException();
+            }
         }
     }
 
@@ -66,6 +76,11 @@ public class Container {
 
         if (indexOfStockBag != -1) {
             storage.remove(indexOfStockBag);
+            for (int i = 0; i < listOfIDs.size(); i++) {
+                if (listOfIDs.get(i) == id) {
+                    listOfIDs.remove(i);
+                }
+            }
         }
     }
 
@@ -140,5 +155,10 @@ public class Container {
     // EFFECTS: returns number of storage bags in container
     public int getSize() {
         return storage.size();
+    }
+
+    // EFFECTS: returns list of all bags in container
+    public List<StockBag> getBags() {
+        return storage;
     }
 }

@@ -42,7 +42,7 @@ container at the Richmond Night Market. The functions are very simple and can be
 
 The user has 2 different containers that stock bags can be stored into: containers A and B.
 
-1. Record a stock bag
+1. Record a stock bag 
 	This function creates a stock bag and stores it inside a container. To use it properly, you must enter a UNIQUE four-digit
 	ID for the bag you're creating, and either "A or a" or "B or b" in the container field. The other fields can be any respective
 	string or int.
@@ -69,3 +69,11 @@ The user has 2 different containers that stock bags can be stored into: containe
 	
 7. Load
 	This function loads any previously saved containers and stock bags inside them back into the running program.
+	
+## Phase 4: Task 2
+
+I have decided to add ROBUSTNESS to my Container class. The method in Container class that is robust is the addBag() method. 
+The addBag() method throws a DuplicateIDException which, when handled, doesn't allow that container to have a bag with a duplicate ID.
+
+For example, if container A has a bag with ID 1234 and I try to add or move a bag with ID 1234 into container A, it will give me an error
+message.

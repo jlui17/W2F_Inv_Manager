@@ -1,6 +1,7 @@
 package persistence;
 
 import model.Container;
+import model.Exceptions.DuplicateIDException;
 import model.StockBag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,15 +26,19 @@ public class WriterTest {
 
     @BeforeEach
     void runBefore() throws FileNotFoundException, UnsupportedEncodingException {
-        testWriter = new Writer(new File(TEST_FILE));
-        bag1 = new StockBag("Kaws",1111,3,100,"Basketball");
-        bag2 = new StockBag("Minion",2222,4,50,"Tubs");
-        bag3 = new StockBag("BT21",3333,4,150,"Birthday");
-        containerA = new Container();
-        containerB = new Container();
-        containerA.addBag(bag3);
-        containerB.addBag(bag2);
-        containerB.addBag(bag1);
+        try {
+            testWriter = new Writer(new File(TEST_FILE));
+            bag1 = new StockBag("Kaws", 1111, 3, 100, "Basketball");
+            bag2 = new StockBag("Minion", 2222, 4, 50, "Tubs");
+            bag3 = new StockBag("BT21", 3333, 4, 150, "Birthday");
+            containerA = new Container();
+            containerB = new Container();
+            containerA.addBag(bag3);
+            containerB.addBag(bag2);
+            containerB.addBag(bag1);
+        } catch (DuplicateIDException e) {
+            //
+        }
     }
 
     @Test

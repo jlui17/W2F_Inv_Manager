@@ -6,6 +6,8 @@ import persistence.Saveable;
 import java.io.PrintWriter;
 import java.util.Objects;
 
+import ui.StorageApp;
+
 // Represents a stock bag with a bag number, size of stock, total quantity and which game it's for
 public class StockBag implements Saveable {
     private String description;
@@ -24,11 +26,13 @@ public class StockBag implements Saveable {
                      this game to game.
      */
     public StockBag(String description, int number, int size, int quantity, String game) {
+
         this.description = description;
         this.number = number;
         this.size = size;
         this.quantity = quantity;
         this.game = game;
+
     }
 
     // EFFECTS: changes game of stock bag

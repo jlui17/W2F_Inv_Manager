@@ -1,6 +1,7 @@
 package ui;
 
 import model.Container;
+import model.Exceptions.DuplicateIDException;
 import model.StockBag;
 import persistence.Reader;
 import persistence.Writer;
@@ -11,6 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 //import java.util.Scanner;
 
@@ -29,6 +31,7 @@ public class StorageApp extends JPanel {
     private Container containerA;
     private Container containerB;
 //    private String choice;
+    public List<Integer> listOfIDs;
 
     private JFrame main;
     private String img;
@@ -360,14 +363,18 @@ public class StorageApp extends JPanel {
     // MODIFIES: this
     // EFFECTS: stores a stock bag in a container
     private void storeIn(String c) {
-        if (c.equals("a")) {
-            containerA.addBag(bag);
-            displayMessage("Recorded bag: " + bag.toString() + " and stored in Container A.");
-        } else if (c.equals("b")) {
-            containerB.addBag(bag);
-            displayMessage("Recorded bag: " + bag.toString() + " and stored in Container B.");
-        } else {
-            displayMessage("Invalid container");
+        try {
+            if (c.equals("a")) {
+                containerA.addBag(bag);
+                displayMessage("Recorded bag: " + bag.toString() + " and stored in Container A.");
+            } else if (c.equals("b")) {
+                containerB.addBag(bag);
+                displayMessage("Recorded bag: " + bag.toString() + " and stored in Container B.");
+            } else {
+                displayMessage("Invalid container");
+            }
+        } catch (DuplicateIDException e) {
+            displayMessage("Bag ID already exists!");
         }
     }
 
@@ -377,21 +384,29 @@ public class StorageApp extends JPanel {
         JTextField id = new JTextField();
         frame.add(id);
 
-        initiateMoveEnter(frame, id);
+        frame.add(new JLabel("From container A or B?"));
+        JTextField c = new JTextField();
+        frame.add(c);
+
+        initiateMoveEnter(frame, id, c);
     }
 
     // MODIFIES: this
     // EFFECTS: initiates enter button in moveStockBag() and moves a stock bag
-    private void initiateMoveEnter(JFrame frame, JTextField id) {
+    private void initiateMoveEnter(JFrame frame, JTextField id, JTextField c) {
         JButton enter = new JButton("Move");
         enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    if (containerA.contains(Integer.parseInt(id.getText()))) {
-                        moving(Integer.parseInt(id.getText()), containerA, containerB);
-                    } else if (containerB.contains(Integer.parseInt(id.getText()))) {
-                        moving(Integer.parseInt(id.getText()), containerB, containerA);
+                    if (c.getText().toLowerCase().equals("a")) {
+                        if (containerA.contains(Integer.parseInt(id.getText()))) {
+                            moving(Integer.parseInt(id.getText()), containerA, containerB);
+                        }
+                    } else if (c.getText().toLowerCase().equals("b")) {
+                        if (containerB.contains(Integer.parseInt(id.getText()))) {
+                            moving(Integer.parseInt(id.getText()), containerB, containerA);
+                        }
                     } else {
                         displayMessage("Bag not found!");
                     }
@@ -444,13 +459,17 @@ public class StorageApp extends JPanel {
     // MODIFIES: this
     // EFFECTS: moves a stock bag from one container to the other
     private void moving(int id, Container thisContainer, Container otherContainer) {
-        bag = thisContainer.getBag(thisContainer.getIndexOfBag(id));
-        thisContainer.removeBag(id);
-        otherContainer.addBag(bag);
-        if (thisContainer.equals(containerA)) {
-            displayMessage("Moved " + bag.toString() + " from Container A to Container B");
-        } else {
-            displayMessage("Moved " + bag.toString() + " from Container B to Container A");
+        try {
+            bag = thisContainer.getBag(thisContainer.getIndexOfBag(id));
+            otherContainer.addBag(bag);
+            thisContainer.removeBag(id);
+            if (thisContainer.equals(containerA)) {
+                displayMessage("Moved " + bag.toString() + " from Container A to Container B");
+            } else if (thisContainer.equals(containerB)) {
+                displayMessage("Moved " + bag.toString() + " from Container B to Container A");
+            }
+        } catch (DuplicateIDException e) {
+            displayMessage("Can't add bags with duplicate IDs into the same container!");
         }
     }
 
@@ -460,27 +479,22 @@ public class StorageApp extends JPanel {
         JTextField id = new JTextField();
         frame.add(id);
 
-        initiateDeleteEnter(frame, id);
+        frame.add(new JLabel("From container A or B?"));
+        JTextField c = new JTextField();
+        frame.add(c);
+
+        initiateDeleteEnter(frame, id, c);
     }
 
     // MODIFIES: this
     // EFFECTS: initiates enter button for deleteStockBag() and deletes stock bag
-    private void initiateDeleteEnter(JFrame frame, JTextField id) {
+    private void initiateDeleteEnter(JFrame frame, JTextField id, JTextField c) {
         JButton enter = new JButton("Delete");
         enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    int bagID = Integer.parseInt(id.getText());
-                    if (containerA.contains(bagID)) {
-                        displayRemovedMessage(containerA, bagID);
-                        containerA.removeBag(bagID);
-                    } else if (containerB.contains(bagID)) {
-                        displayRemovedMessage(containerB, bagID);
-                        containerB.removeBag(bagID);
-                    } else {
-                        displayMessage("Bag not found!");
-                    }
+                    deleteBagFrom(c.getText().toLowerCase(), Integer.parseInt(id.getText()));
                 } catch (Exception e) {
                     displayMessage("Invalid input.");
                 }
@@ -488,6 +502,19 @@ public class StorageApp extends JPanel {
             }
         });
         frame.add(enter);
+    }
+
+    // EFFECTS: deletes bag from container
+    private void deleteBagFrom(String container, int id) {
+        if (container.equals("a")) {
+            displayRemovedMessage(containerA, id);
+            containerA.removeBag(id);
+        } else if (container.equals("b")) {
+            displayRemovedMessage(containerB, id);
+            containerB.removeBag(id);
+        } else {
+            displayMessage("Bag not found!");
+        }
     }
 
     // displays message when stock bag is removed from a container

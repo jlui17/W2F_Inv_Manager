@@ -3,6 +3,7 @@
 package persistence;
 
 import model.Container;
+import model.Exceptions.DuplicateIDException;
 import model.StockBag;
 
 import java.io.File;
@@ -41,20 +42,24 @@ public class Reader {
         ArrayList<Container> containers = new ArrayList<>(Arrays.asList(containerA, containerB));
         boolean flag = false;
 
-        for (String line : fileContent) {
-            if (line.equals("ContainerB")) {
-                flag = true;
-            } else {
-                ArrayList<String> lineComponents = splitString(line);
-
-                if (!flag) {
-                    containerA.addBag(parseStockBag(lineComponents));
+        try {
+            for (String line : fileContent) {
+                if (line.equals("ContainerB")) {
+                    flag = true;
                 } else {
-                    containerB.addBag(parseStockBag(lineComponents));
+                    ArrayList<String> lineComponents = splitString(line);
+
+                    if (!flag) {
+                        containerA.addBag(parseStockBag(lineComponents));
+                    } else {
+                        containerB.addBag(parseStockBag(lineComponents));
+                    }
                 }
             }
+            return containers;
+        } catch (DuplicateIDException e) {
+            return containers;
         }
-        return containers;
     }
 
     // EFFECTS: returns a list of strings obtained by splitting line on DELIMITER
