@@ -33,9 +33,9 @@ public class WriterTest {
             bag3 = new StockBag("BT21", 3333, 4, 150, "Birthday");
             containerA = new Container();
             containerB = new Container();
-            containerA.addBag(bag3);
-            containerB.addBag(bag2);
-            containerB.addBag(bag1);
+            containerA.addItem(bag3);
+            containerB.addItem(bag2);
+            containerB.addItem(bag1);
         } catch (DuplicateIDException e) {
             //
         }
@@ -45,22 +45,22 @@ public class WriterTest {
     void testWriteContainers() {
         // save containers to file
         for (int i = 1; i <= containerA.getSize(); i++) {
-            testWriter.write(containerA.getBag(i));
+            testWriter.write(containerA.getItem(i));
         }
         testWriter.nextContainer();
         for (int i = 1; i <= containerB.getSize(); i++) {
-            testWriter.write(containerB.getBag(i));
+            testWriter.write(containerB.getItem(i));
         }
         testWriter.close();
 
         try {
             List<Container> containers = Reader.readContainers(new File(TEST_FILE));
             Container containerC = containers.get(0);
-            assertEquals(bag3, containerC.getBag(1));
+            assertEquals(bag3, containerC.getItem(1));
 
             Container containerD = containers.get(1);
-            assertEquals(bag1, containerD.getBag(2));
-            assertEquals(bag2, containerD.getBag(1));
+            assertEquals(bag1, containerD.getItem(2));
+            assertEquals(bag2, containerD.getItem(1));
 
         } catch (IOException e) {
             fail("IOException should not have been thrown");

@@ -48,11 +48,10 @@ The user has 2 different containers that stock bags can be stored into: containe
 	string or int.
 	
 2. Move a stock bag
-	This function moves a stock bag from its current container to the other. As long as each bag has a UNIQUE ID, the function will
-	find that bag, and if it's in container A it will be moved to container B, and vice versa.
+	This function moves a stock bag from its current container to the other. 
 	
 3. Delete a stock bag
-	This function completely removes a stock bag from any container. 
+	This function completely removes a stock bag from a container. 
 	
 4. View container A
 	This function displays a non-interactive map of container A. There can be up to 9 different bags in each container, and they're
@@ -77,3 +76,17 @@ The addBag() method throws a DuplicateIDException which, when handled, doesn't a
 
 For example, if container A has a bag with ID 1234 and I try to add or move a bag with ID 1234 into container A, it will give me an error
 message.
+
+## Phase 4: Task 3
+
+After analyzing my two classes: Container and Stockbag, I was unable to identify any cohesion or coupling problems. 
+
+However, I realized that at the Night Market, we store more than just stock bags in each container, such as equipment for games. 
+
+So, I've decided to create another abstract class called "Storable", which will be the parent class of all storable subclasses (or all the items 
+that go into a container). This design allows for easier functionality expansion in the future along with looser coupling between Container 
+and each Storable subclass. 
+
+So, if, in the future, I decide to add multiple storable subclasses, like "Equipment", "Game Structures", "Bubble Tea Ingredients" and more to
+represent different items that can be stored in a container, since Container only deals with all Storable classes, there would be much less 
+coupling between all of them. 

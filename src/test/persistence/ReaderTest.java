@@ -22,12 +22,12 @@ public class ReaderTest {
             StockBag bag2 = new StockBag("Minion",2222,4,50,"Tubs");
             Container containerA = containers.get(0);
 
-            assertEquals(bag1, containerA.getBag(1));
-            assertEquals(bag2, containerA.getBag(2));
+            assertEquals(bag1, containerA.getItem(1));
+            assertEquals(bag2, containerA.getItem(2));
 
             Container containerB = containers.get(1);
             StockBag bag3 = new StockBag("BT21",3333,4,150,"Birthday");
-            assertEquals(bag3, containerB.getBag(1));
+            assertEquals(bag3, containerB.getItem(1));
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }

@@ -4,7 +4,6 @@ package model;
 import model.Exceptions.DuplicateIDException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 // Represents a storage container that stores stock bags.
 // The container holds up to 9 bags in a stack of 3 bags and 3 rows and stacks (3x3).
@@ -15,8 +14,8 @@ import java.util.List;
 public class Container {
     private static final int MAX_SIZE = 9;
 
-    private ArrayList<StockBag> storage;
-    private int indexOfStockBag;
+    private ArrayList<Storable> storage;
+    private int indexOfItem;
     private String container;
     private ArrayList<Integer> listOfIDs;
 
@@ -26,14 +25,13 @@ public class Container {
         listOfIDs = new ArrayList<>();
     }
 
-    // REQUIRES: bag ID isn't same as any other bag in storage
     // MODIFIES: this
     // EFFECTS: adds stock bag into storage
-    public void addBag(StockBag bag) throws DuplicateIDException{
+    public void addItem(Storable item) throws DuplicateIDException {
         if (!(storage.size() >= MAX_SIZE)) {
-            if (!listOfIDs.contains(bag.getBagNumber())) {
-                storage.add(bag);
-                listOfIDs.add(bag.getBagNumber());
+            if (!listOfIDs.contains(item.getNumber())) {
+                storage.add(item);
+                listOfIDs.add(item.getNumber());
             } else {
                 throw new DuplicateIDException();
             }
@@ -41,41 +39,35 @@ public class Container {
     }
 
     // EFFECTS: returns position of bag in storage specified by bag number, else returns -1 if bag not in storage
-    public int getIndexOfBag(int id) {
-        indexOfStockBag = -1;
+    public int getIndexOfItem(int id) {
+        indexOfItem = -1;
         for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getBagNumber() == id) {
-                indexOfStockBag = i + 1;
+            if (storage.get(i).getNumber() == id) {
+                indexOfItem = i + 1;
             }
         }
-        return indexOfStockBag;
+        return indexOfItem;
     }
 
     // REQUIRES: 1 <= index <= storage size
     // EFFECTS: returns bag of specified index in storage
-    public StockBag getBag(int index) {
+    public Storable getItem(int index) {
         return storage.get(index - 1);
-    }
-
-    // REQUIRES: 1 <= index <= storage size
-    // EFFECTS: returns bag ID of specified bag
-    public int getBagID(int index) {
-        return storage.get(index - 1).getBagNumber();
     }
 
     // REQUIRES: 1 <= 0 <= storage size
     // MODIFIES: this
     // EFFECTS: removes bag from storage
-    public void removeBag(int id) {
-        indexOfStockBag = -1;
+    public void removeItem(int id) {
+        indexOfItem = -1;
         for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getBagNumber() == id) {
-                indexOfStockBag = i;
+            if (storage.get(i).getNumber() == id) {
+                indexOfItem = i;
             }
         }
 
-        if (indexOfStockBag != -1) {
-            storage.remove(indexOfStockBag);
+        if (indexOfItem != -1) {
+            storage.remove(indexOfItem);
             for (int i = 0; i < listOfIDs.size(); i++) {
                 if (listOfIDs.get(i) == id) {
                     listOfIDs.remove(i);
@@ -84,15 +76,8 @@ public class Container {
         }
     }
 
-    // REQUIRES: storage isn't full, 1 <= pos <= storage size
-    // MODIFIES: this
-    // EFFECTS: inserts bag into specified position
-    public void insertBag(int pos, StockBag bag) {
-        storage.add(pos - 1, bag);
-    }
-
     // EFFECTS: returns amount of stock bags in storage
-    public int getAmountOfStockBags() {
+    public int getAmountOfItems() {
         return storage.size();
     }
 
@@ -103,8 +88,8 @@ public class Container {
 
     // EFFECTS: returns true if bag with specified id is in storage
     public boolean contains(int id) {
-        for (StockBag b : storage) {
-            if (b.getBagNumber() == id) {
+        for (Storable i : storage) {
+            if (i.getNumber() == id) {
                 return true;
             }
         }
@@ -125,9 +110,9 @@ public class Container {
                     limit = 3;
                 }
                 if (!(i == 1 || i == 4 || i == 7)) {
-                    container += storage.get(i - 1).getBagNumber() + "|";
+                    container += storage.get(i - 1).getNumber() + "|";
                 } else {
-                    container += storage.get(i - 1).getBagNumber();
+                    container += storage.get(i - 1).getNumber();
                 }
                 limit--;
             }
@@ -144,9 +129,9 @@ public class Container {
                 limit = 3;
             }
             if (!(i == 1 || i == 4 || i == 7)) {
-                container += storage.get(i - 1).getBagNumber() + "|";
+                container += storage.get(i - 1).getNumber() + "|";
             } else {
-                container += storage.get(i - 1).getBagNumber();
+                container += storage.get(i - 1).getNumber();
             }
             limit--;
         }
@@ -155,10 +140,5 @@ public class Container {
     // EFFECTS: returns number of storage bags in container
     public int getSize() {
         return storage.size();
-    }
-
-    // EFFECTS: returns list of all bags in container
-    public List<StockBag> getBags() {
-        return storage;
     }
 }

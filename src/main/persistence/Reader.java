@@ -4,7 +4,7 @@ package persistence;
 
 import model.Container;
 import model.Exceptions.DuplicateIDException;
-import model.StockBag;
+import model.Storable;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,9 +50,9 @@ public class Reader {
                     ArrayList<String> lineComponents = splitString(line);
 
                     if (!flag) {
-                        containerA.addBag(parseStockBag(lineComponents));
+                        containerA.addItem(parseStorable(lineComponents));
                     } else {
-                        containerB.addBag(parseStockBag(lineComponents));
+                        containerB.addItem(parseStorable(lineComponents));
                     }
                 }
             }
@@ -73,12 +73,13 @@ public class Reader {
     // the id number, elements 2 represents the size and element 3 represents
     // the quantity of prizes in the bag, and element 4 represents the game
     // EFFECTS: returns an StockBag constructed from components
-    private static StockBag parseStockBag(List<String> components) {
+    private static Storable parseStorable(List<String> components) {
         String description = components.get(0);
         int number = Integer.parseInt(components.get(1));
         int size = Integer.parseInt(components.get(2));
         int quantity = Integer.parseInt(components.get(3));
         String game = components.get(4);
-        return new StockBag(description, number, size, quantity, game);
+        return new Storable(description, number, size, quantity, game) {
+        };
     }
 }

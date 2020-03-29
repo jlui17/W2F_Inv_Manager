@@ -17,16 +17,10 @@ class StockBagTest {
     @Test
     void testConstructor() {
         assertEquals("Kaws", bag.getDescription());
-        assertEquals(1234, bag.getBagNumber());
+        assertEquals(1234, bag.getNumber());
         assertEquals(4, bag.getSize());
         assertEquals(400, bag.getQuantity());
         assertEquals("Birthday", bag.getGame());
-    }
-
-    @Test
-    void testChangeGame() {
-        bag.changeGame("Basketball");
-        assertEquals("Basketball", bag.getGame());
     }
 
     @Test

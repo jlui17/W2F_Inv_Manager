@@ -3,6 +3,7 @@ package ui;
 import model.Container;
 import model.Exceptions.DuplicateIDException;
 import model.StockBag;
+import model.Storable;
 import persistence.Reader;
 import persistence.Writer;
 
@@ -12,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 //import java.util.Scanner;
 
@@ -22,7 +22,7 @@ public class StorageApp extends JPanel {
     private static final String SAVE_FILE = "./data/save.txt";
 
 //    private Scanner input;
-    private StockBag bag;
+    private Storable item;
 //    private String description;
 //    private int number;
 //    private int size;
@@ -31,7 +31,6 @@ public class StorageApp extends JPanel {
     private Container containerA;
     private Container containerB;
 //    private String choice;
-    public List<Integer> listOfIDs;
 
     private JFrame main;
     private String img;
@@ -69,43 +68,43 @@ public class StorageApp extends JPanel {
     }
 
     private void initiateRecordButton() {
-        record = new JButton("Record a stock bag");
+        record = new JButton("Record an Item");
         record.setAlignmentX(Component.CENTER_ALIGNMENT);
         record.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound();
-                recordStockBag();
+                recordItem();
             }
         });
     }
 
     private void initiateMoveButton() {
-        move = new JButton("Move a stock back from one container to another");
+        move = new JButton("Move an item from one Container to another");
         move.setAlignmentX(Component.CENTER_ALIGNMENT);
         move.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound();
-                moveStockBag();
+                moveItem();
             }
         });
     }
 
     private void initiateDeleteButton() {
-        delete = new JButton("Delete a stock bag");
+        delete = new JButton("Delete an Item");
         delete.setAlignmentX(Component.CENTER_ALIGNMENT);
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound();
-                deleteStockBag();
+                deleteItem();
             }
         });
     }
 
     private void initiateViewAButton() {
-        viewA = new JButton("View a container A");
+        viewA = new JButton("View a Container A");
         viewA.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewA.addActionListener(new ActionListener() {
             @Override
@@ -117,7 +116,7 @@ public class StorageApp extends JPanel {
     }
 
     private void initiateViewBButton() {
-        viewB = new JButton("View a container B");
+        viewB = new JButton("View a Container B");
         viewB.setAlignmentX(Component.CENTER_ALIGNMENT);
         viewB.addActionListener(new ActionListener() {
             @Override
@@ -228,11 +227,11 @@ public class StorageApp extends JPanel {
         try {
             Writer writer = new Writer(new File(SAVE_FILE));
             for (int i = 1; i <= containerA.getSize(); i++) {
-                writer.write(containerA.getBag(i));
+                writer.write(containerA.getItem(i));
             }
             writer.nextContainer();
             for (int i = 1; i <= containerB.getSize(); i++) {
-                writer.write(containerB.getBag(i));
+                writer.write(containerB.getItem(i));
             }
             writer.close();
             displayMessage("Containers saved to file " + SAVE_FILE);
@@ -271,8 +270,8 @@ public class StorageApp extends JPanel {
 
     // MODIFIES: this
     // EFFECTS: records a stock bag and adds it to a container
-    private void recordStockBag() {
-        JFrame recordWindow = new JFrame("Record a stock bag");
+    private void recordItem() {
+        JFrame recordWindow = new JFrame("Record an Item");
         recordWindow.setLocationRelativeTo(null);
         recordWindow.getContentPane().setLayout(new BoxLayout(recordWindow.getContentPane(), BoxLayout.Y_AXIS));
         initiateRecordFields(recordWindow);
@@ -301,23 +300,23 @@ public class StorageApp extends JPanel {
 
     // EFFECTS: Initiates texts fields for recordStockBag()
     private void initiateRecordFields(JFrame frame) {
-        frame.add(new JLabel("Name of the prize:"));
+        frame.add(new JLabel("Description of item:"));
         JTextField name = new JTextField();
         frame.add(name);
 
-        frame.add(new JLabel("Bag ID number:"));
+        frame.add(new JLabel("ID number:"));
         JTextField id = new JTextField();
         frame.add(id);
 
-        frame.add(new JLabel("Size of the prize (1-4)"));
+        frame.add(new JLabel("Size (1-4)"));
         JTextField size = new JTextField();
         frame.add(size);
 
-        frame.add(new JLabel("Quantity of prizes in bag:"));
+        frame.add(new JLabel("Quantity:"));
         JTextField quantity = new JTextField();
         frame.add(quantity);
 
-        frame.add(new JLabel("Game for prize:"));
+        frame.add(new JLabel("For which game?:"));
         JTextField game = new JTextField();
         frame.add(game);
 
@@ -328,7 +327,7 @@ public class StorageApp extends JPanel {
         initiateRecordEnter(frame, name, id, size, quantity, game, container);
     }
 
-    // EFFECTS: initiates enter button in recordStockBag() and records and stores a stock bag
+    // EFFECTS: initiates enter button in recordItem() and records and stores a storable item
     private void initiateRecordEnter(JFrame frame, JTextField name, JTextField id, JTextField size,
                                      JTextField quantity, JTextField game, JTextField container) {
         JButton enter = new JButton("Record");
@@ -336,7 +335,7 @@ public class StorageApp extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    bag = new StockBag(name.getText(), Integer.parseInt(id.getText()),
+                    item = new StockBag(name.getText(), Integer.parseInt(id.getText()),
                             Integer.parseInt(size.getText()), Integer.parseInt(quantity.getText()), game.getText());
                     storeIn(container.getText().toLowerCase());
                 } catch (Exception e) {
@@ -361,15 +360,15 @@ public class StorageApp extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: stores a stock bag in a container
+    // EFFECTS: stores an item in a container
     private void storeIn(String c) {
         try {
             if (c.equals("a")) {
-                containerA.addBag(bag);
-                displayMessage("Recorded bag: " + bag.toString() + " and stored in Container A.");
+                containerA.addItem(item);
+                displayMessage("Recorded: " + item.toString() + " and stored in Container A.");
             } else if (c.equals("b")) {
-                containerB.addBag(bag);
-                displayMessage("Recorded bag: " + bag.toString() + " and stored in Container B.");
+                containerB.addItem(item);
+                displayMessage("Recorded: " + item.toString() + " and stored in Container B.");
             } else {
                 displayMessage("Invalid container");
             }
@@ -378,9 +377,9 @@ public class StorageApp extends JPanel {
         }
     }
 
-    // EFFECTS: initiates text fields for moveStockBag()
+    // EFFECTS: initiates text fields for moveItem()
     private void initiateMoveFields(JFrame frame) {
-        frame.add(new JLabel("Bag ID number:"));
+        frame.add(new JLabel("ID number:"));
         JTextField id = new JTextField();
         frame.add(id);
 
@@ -392,7 +391,7 @@ public class StorageApp extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: initiates enter button in moveStockBag() and moves a stock bag
+    // EFFECTS: initiates enter button in moveItem() and moves an item
     private void initiateMoveEnter(JFrame frame, JTextField id, JTextField c) {
         JButton enter = new JButton("Move");
         enter.addActionListener(new ActionListener() {
@@ -408,7 +407,7 @@ public class StorageApp extends JPanel {
                             moving(Integer.parseInt(id.getText()), containerB, containerA);
                         }
                     } else {
-                        displayMessage("Bag not found!");
+                        displayMessage("Item not found!");
                     }
                 } catch (Exception e) {
                     displayMessage("Invalid input.");
@@ -421,8 +420,8 @@ public class StorageApp extends JPanel {
 
     // MODIFIES: this
     // EFFECTS: moves a stock bag from one container to the other
-    private void moveStockBag() {
-        JFrame recordWindow = new JFrame("Move a stock bag");
+    private void moveItem() {
+        JFrame recordWindow = new JFrame("Move an item");
         recordWindow.setLocationRelativeTo(null);
         recordWindow.getContentPane().setLayout(new BoxLayout(recordWindow.getContentPane(), BoxLayout.Y_AXIS));
         initiateMoveFields(recordWindow);
@@ -457,25 +456,25 @@ public class StorageApp extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: moves a stock bag from one container to the other
+    // EFFECTS: moves an item from one container to the other
     private void moving(int id, Container thisContainer, Container otherContainer) {
         try {
-            bag = thisContainer.getBag(thisContainer.getIndexOfBag(id));
-            otherContainer.addBag(bag);
-            thisContainer.removeBag(id);
+            item = thisContainer.getItem(thisContainer.getIndexOfItem(id));
+            otherContainer.addItem(item);
+            thisContainer.removeItem(id);
             if (thisContainer.equals(containerA)) {
-                displayMessage("Moved " + bag.toString() + " from Container A to Container B");
+                displayMessage("Moved " + item.toString() + " from Container A to Container B");
             } else if (thisContainer.equals(containerB)) {
-                displayMessage("Moved " + bag.toString() + " from Container B to Container A");
+                displayMessage("Moved " + item.toString() + " from Container B to Container A");
             }
         } catch (DuplicateIDException e) {
             displayMessage("Can't add bags with duplicate IDs into the same container!");
         }
     }
 
-    // EFFECTS: initiates fields for deleteStockBag()
+    // EFFECTS: initiates fields for deleteItem()
     private void initiateDeleteFields(JFrame frame) {
-        frame.add(new JLabel("Bag ID number:"));
+        frame.add(new JLabel("ID number:"));
         JTextField id = new JTextField();
         frame.add(id);
 
@@ -487,14 +486,14 @@ public class StorageApp extends JPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: initiates enter button for deleteStockBag() and deletes stock bag
+    // EFFECTS: initiates enter button for deleteItem() and deletes an item
     private void initiateDeleteEnter(JFrame frame, JTextField id, JTextField c) {
         JButton enter = new JButton("Delete");
         enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    deleteBagFrom(c.getText().toLowerCase(), Integer.parseInt(id.getText()));
+                    deleteItemFrom(c.getText().toLowerCase(), Integer.parseInt(id.getText()));
                 } catch (Exception e) {
                     displayMessage("Invalid input.");
                 }
@@ -504,34 +503,34 @@ public class StorageApp extends JPanel {
         frame.add(enter);
     }
 
-    // EFFECTS: deletes bag from container
-    private void deleteBagFrom(String container, int id) {
+    // EFFECTS: deletes item from container
+    private void deleteItemFrom(String container, int id) {
         if (container.equals("a")) {
             displayRemovedMessage(containerA, id);
-            containerA.removeBag(id);
+            containerA.removeItem(id);
         } else if (container.equals("b")) {
             displayRemovedMessage(containerB, id);
-            containerB.removeBag(id);
+            containerB.removeItem(id);
         } else {
-            displayMessage("Bag not found!");
+            displayMessage("Item not found!");
         }
     }
 
-    // displays message when stock bag is removed from a container
+    // displays message when item is removed from a container
     private void displayRemovedMessage(Container container, int id) {
         if (container.equals(containerA)) {
-            displayMessage("Removed " + container.getBag(container.getIndexOfBag(id)).toString()
+            displayMessage("Removed " + container.getItem(container.getIndexOfItem(id)).toString()
                     + " from container A.");
         } else if (container.equals(containerB)) {
-            displayMessage("Removed " + container.getBag(container.getIndexOfBag(id)).toString()
+            displayMessage("Removed " + container.getItem(container.getIndexOfItem(id)).toString()
                     + " from container B.");
         }
     }
 
     // MODIFIES: this
-    // EFFECTS: deletes a stock bag from a container
-    private void deleteStockBag() {
-        JFrame deleteWindow = new JFrame("Delete a stock bag");
+    // EFFECTS: deletes an item from a container
+    private void deleteItem() {
+        JFrame deleteWindow = new JFrame("Delete an Item");
         deleteWindow.setLocationRelativeTo(null);
         deleteWindow.getContentPane().setLayout(new BoxLayout(deleteWindow.getContentPane(), BoxLayout.Y_AXIS));
         initiateDeleteFields(deleteWindow);
