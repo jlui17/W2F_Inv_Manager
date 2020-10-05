@@ -83,13 +83,14 @@ public abstract class Storable implements Saveable {
         }
         Storable storable = (Storable) o;
         return number == storable.number
-                &&
-                size == storable.size
-                &&
-                quantity == storable.quantity
-                &&
-                Objects.equals(description, storable.description)
-                &&
-                Objects.equals(game, storable.game);
+                && size == storable.size
+                && quantity == storable.quantity
+                && description.equals(storable.description)
+                && game.equals(storable.game);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description, number, size, quantity, game);
     }
 }

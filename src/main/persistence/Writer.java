@@ -22,8 +22,8 @@ public class Writer {
         saveable.save(printWriter);
     }
 
-    public void nextContainer() {
-        printWriter.println("ContainerB");
+    public void nextContainer(char id) {
+        printWriter.println("# " + id);
     }
 
     // MODIFIES: this

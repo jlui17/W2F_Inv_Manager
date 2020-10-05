@@ -2,6 +2,7 @@ package ui;
 
 import model.Container;
 import model.Exceptions.DuplicateIDException;
+import model.Exceptions.InvalidContainerIDException;
 import model.StockBag;
 import model.Storable;
 import persistence.Reader;
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 //import java.util.Scanner;
 
@@ -20,16 +22,15 @@ import java.util.List;
 public class StorageApp extends JPanel {
 
     private static final String SAVE_FILE = "./data/save.txt";
+    private int numID = 65;     // (char)65 = 'A', (char)66 = 'B', etc...
 
 //    private Scanner input;
-    private Storable item;
 //    private String description;
 //    private int number;
 //    private int size;
 //    private int quantity;
 //    private String game;
-    private Container containerA;
-    private Container containerB;
+    private ArrayList<Container> containers;
 //    private String choice;
 
     private JFrame main;
@@ -37,8 +38,7 @@ public class StorageApp extends JPanel {
     private JButton record;
     private JButton move;
     private JButton delete;
-    private JButton viewA;
-    private JButton viewB;
+    private JButton view;
     private JButton save;
     private JButton load;
 
@@ -49,8 +49,7 @@ public class StorageApp extends JPanel {
         initiateRecordButton();
         initiateMoveButton();
         initiateDeleteButton();
-        initiateViewAButton();
-        initiateViewBButton();
+        initiateViewButton();
         initiateSaveButton();
         initiateLoadButton();
 
@@ -59,8 +58,7 @@ public class StorageApp extends JPanel {
     }
 
     private void initiateStartProcesses() {
-        containerA = new Container();
-        containerB = new Container();
+        containers = new ArrayList<>();
         main = new JFrame("Storage App");
         main.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         main.setLocationRelativeTo(null); //centers in middle of screen
@@ -103,26 +101,18 @@ public class StorageApp extends JPanel {
         });
     }
 
-    private void initiateViewAButton() {
-        viewA = new JButton("View a Container A");
-        viewA.setAlignmentX(Component.CENTER_ALIGNMENT);
-        viewA.addActionListener(new ActionListener() {
+    private void initiateViewButton() {
+        view = new JButton("View a Container");
+        view.setAlignmentX(Component.CENTER_ALIGNMENT);
+        view.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 playSound();
-                displayMessage(containerA.toString());
-            }
-        });
-    }
-
-    private void initiateViewBButton() {
-        viewB = new JButton("View a Container B");
-        viewB.setAlignmentX(Component.CENTER_ALIGNMENT);
-        viewB.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playSound();
-                displayMessage(containerB.toString());
+                String msg = "";
+                for (int i = 0; i < containers.size(); i++) {
+                    msg += containers.get(i).toString() + "<br>";
+                }
+                displayMessage(msg);
             }
         });
     }
@@ -158,8 +148,7 @@ public class StorageApp extends JPanel {
         main.add(record);
         main.add(move);
         main.add(delete);
-        main.add(viewA);
-        main.add(viewB);
+        main.add(view);
         main.add(save);
         main.add(load);
         main.add(image);
@@ -208,31 +197,60 @@ public class StorageApp extends JPanel {
 //        System.out.println("Exiting... goodbye!");
 //    }
 
+    // EFFECTS: reset ID back to 'A' as an int
+    public void resetID() {
+        numID = 65;
+    }
+
+    private void addContainer() {
+        Container temp = new Container((char)numID);
+        numID++;
+        containers.add(temp);
+    }
+
     // MODIFIES: this
     // EFFECTS: loads containers from SAVE_FILE, if that file exists;
-    // otherwise initializes containers as empty
+    // otherwise start with two empty containers
     private void loadContainers() {
+        resetID();
         try {
             List<Container> containers = Reader.readContainers(new File(SAVE_FILE));
-            containerA = containers.get(0);
-            containerB = containers.get(1);
+            for (Container c : containers) {
+                this.containers.add(c);
+            }
+            numID += containers.size();
+            if (this.containers.size() == 0) {
+                addContainer();
+            }
+            System.out.println(this.containers.size());
         } catch (IOException e) {
-            containerA = new Container();
-            containerB = new Container();
+            addContainer();
+            addContainer();
         }
     }
 
-    // EFFECTS: saves state of containerA and containerB to SAVE_FILE
+    // EFFECTS: saves state of containers to SAVE_FILE
     private void saveContainers() {
         try {
             Writer writer = new Writer(new File(SAVE_FILE));
-            for (int i = 1; i <= containerA.getSize(); i++) {
-                writer.write(containerA.getItem(i));
+            Container temp;
+
+            for (int i = 0; i < containers.size(); i++) {
+                temp = containers.get(i);
+                writer.nextContainer(temp.getID());
+                for (int j = 1; j <= temp.getSize(); j++) {
+                    System.out.println(temp.getItem(j));
+                    writer.write(temp.getItem(j));
+                }
             }
-            writer.nextContainer();
-            for (int i = 1; i <= containerB.getSize(); i++) {
-                writer.write(containerB.getItem(i));
-            }
+
+//            for (int i = 1; i <= containerA.getSize(); i++) {
+//                writer.write(containerA.getItem(i));
+//            }
+//            writer.nextContainer();
+//            for (int i = 1; i <= containerB.getSize(); i++) {
+//                writer.write(containerB.getItem(i));
+//            }
             writer.close();
             displayMessage("Containers saved to file " + SAVE_FILE);
         } catch (FileNotFoundException e) {
@@ -320,7 +338,7 @@ public class StorageApp extends JPanel {
         JTextField game = new JTextField();
         frame.add(game);
 
-        frame.add(new JLabel("Store in container A or B?"));
+        frame.add(new JLabel("Store in which container?"));
         JTextField container = new JTextField();
         frame.add(container);
 
@@ -335,9 +353,9 @@ public class StorageApp extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    item = new StockBag(name.getText(), Integer.parseInt(id.getText()),
+                    Storable item = new StockBag(name.getText(), Integer.parseInt(id.getText()),
                             Integer.parseInt(size.getText()), Integer.parseInt(quantity.getText()), game.getText());
-                    storeIn(container.getText().toLowerCase());
+                    storeIn(item, container.getText().toUpperCase());
                 } catch (Exception e) {
                     displayMessage("Invalid input.");
                 }
@@ -359,21 +377,33 @@ public class StorageApp extends JPanel {
         window.setLocationRelativeTo(null);
     }
 
+    // EFFECTS: returns container corresponding to ID
+    private Container getContainer(char id) throws InvalidContainerIDException {
+        for (int j = 0; j < containers.size(); j++) {
+            if (containers.get(j).getID() == id) {
+                return containers.get(j);
+            }
+        }
+        throw new InvalidContainerIDException();
+    }
+
     // MODIFIES: this
+    // REQUIRES: item is valid
     // EFFECTS: stores an item in a container
-    private void storeIn(String c) {
+    private void storeIn(Storable item, String c) {
         try {
-            if (c.equals("a")) {
-                containerA.addItem(item);
-                displayMessage("Recorded: " + item.toString() + " and stored in Container A.");
-            } else if (c.equals("b")) {
-                containerB.addItem(item);
-                displayMessage("Recorded: " + item.toString() + " and stored in Container B.");
-            } else {
+            if (c.length() != 1) {
                 displayMessage("Invalid container");
+            } else {
+                char d = c.charAt(0);
+                Container container = getContainer(d);
+                container.addItem(item);
+                displayMessage("Recorded: " + item.toString() + " and stored in Container " + d + ".");
             }
         } catch (DuplicateIDException e) {
             displayMessage("Bag ID already exists!");
+        } catch (InvalidContainerIDException e) {
+            displayMessage("Container does not exist!");
         }
     }
 
@@ -383,29 +413,32 @@ public class StorageApp extends JPanel {
         JTextField id = new JTextField();
         frame.add(id);
 
-        frame.add(new JLabel("From container A or B?"));
-        JTextField c = new JTextField();
-        frame.add(c);
+        frame.add(new JLabel("Source container:"));
+        JTextField s = new JTextField();
+        frame.add(s);
+        frame.add(new JLabel("Destination container:"));
+        JTextField d = new JTextField();
+        frame.add(d);
 
-        initiateMoveEnter(frame, id, c);
+        initiateMoveEnter(frame, id, s, d);
     }
 
     // MODIFIES: this
     // EFFECTS: initiates enter button in moveItem() and moves an item
-    private void initiateMoveEnter(JFrame frame, JTextField id, JTextField c) {
+    private void initiateMoveEnter(JFrame frame, JTextField id, JTextField s, JTextField d) {
         JButton enter = new JButton("Move");
         enter.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    if (c.getText().toLowerCase().equals("a")) {
-                        if (containerA.contains(Integer.parseInt(id.getText()))) {
-                            moving(Integer.parseInt(id.getText()), containerA, containerB);
-                        }
-                    } else if (c.getText().toLowerCase().equals("b")) {
-                        if (containerB.contains(Integer.parseInt(id.getText()))) {
-                            moving(Integer.parseInt(id.getText()), containerB, containerA);
-                        }
+                    if (s.getText().length() != 1 || d.getText().length() != 1) {
+                        throw new Exception();      // TODO: temporary; implement way of checking if ID is valid
+                    }
+                    Container containerS = getContainer(s.getText().toUpperCase().charAt(0));
+                    Container containerD = getContainer(d.getText().toUpperCase().charAt(0));
+
+                    if (containerS.contains(Integer.parseInt(id.getText()))) {
+                        moving(Integer.parseInt(id.getText()), containerS, containerD);
                     } else {
                         displayMessage("Item not found!");
                     }
@@ -459,14 +492,11 @@ public class StorageApp extends JPanel {
     // EFFECTS: moves an item from one container to the other
     private void moving(int id, Container thisContainer, Container otherContainer) {
         try {
-            item = thisContainer.getItem(thisContainer.getIndexOfItem(id));
+            Storable item = thisContainer.getItem(thisContainer.getIndexOfItem(id));
             otherContainer.addItem(item);
             thisContainer.removeItem(id);
-            if (thisContainer.equals(containerA)) {
-                displayMessage("Moved " + item.toString() + " from Container A to Container B");
-            } else if (thisContainer.equals(containerB)) {
-                displayMessage("Moved " + item.toString() + " from Container B to Container A");
-            }
+            displayMessage("Moved " + item.toString() + " from Container " + thisContainer.getID()
+                    + " to Container " + otherContainer.getID() + ".");
         } catch (DuplicateIDException e) {
             displayMessage("Can't add bags with duplicate IDs into the same container!");
         }
@@ -478,7 +508,7 @@ public class StorageApp extends JPanel {
         JTextField id = new JTextField();
         frame.add(id);
 
-        frame.add(new JLabel("From container A or B?"));
+        frame.add(new JLabel("From which container?"));
         JTextField c = new JTextField();
         frame.add(c);
 
@@ -493,7 +523,7 @@ public class StorageApp extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    deleteItemFrom(c.getText().toLowerCase(), Integer.parseInt(id.getText()));
+                    deleteItemFrom(c.getText().toUpperCase(), Integer.parseInt(id.getText()));
                 } catch (Exception e) {
                     displayMessage("Invalid input.");
                 }
@@ -504,27 +534,20 @@ public class StorageApp extends JPanel {
     }
 
     // EFFECTS: deletes item from container
-    private void deleteItemFrom(String container, int id) {
-        if (container.equals("a")) {
-            displayRemovedMessage(containerA, id);
-            containerA.removeItem(id);
-        } else if (container.equals("b")) {
-            displayRemovedMessage(containerB, id);
-            containerB.removeItem(id);
-        } else {
-            displayMessage("Item not found!");
+    private void deleteItemFrom(String c, int id) throws InvalidContainerIDException {
+        if (c.length() != 1) {
+            throw new RuntimeException();   // TODO: temporary; implement this as helper function
         }
+        char d = c.charAt(0);
+        Container container = getContainer(d);
+        displayRemovedMessage(container, id);
+        container.removeItem(id);
     }
 
     // displays message when item is removed from a container
     private void displayRemovedMessage(Container container, int id) {
-        if (container.equals(containerA)) {
-            displayMessage("Removed " + container.getItem(container.getIndexOfItem(id)).toString()
-                    + " from container A.");
-        } else if (container.equals(containerB)) {
-            displayMessage("Removed " + container.getItem(container.getIndexOfItem(id)).toString()
-                    + " from container B.");
-        }
+        displayMessage("Removed " + container.getItem(container.getIndexOfItem(id)).toString()
+                    + " from container " + container.getID());
     }
 
     // MODIFIES: this

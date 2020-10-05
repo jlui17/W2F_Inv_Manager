@@ -31,8 +31,8 @@ public class WriterTest {
             bag1 = new StockBag("Kaws", 1111, 3, 100, "Basketball");
             bag2 = new StockBag("Minion", 2222, 4, 50, "Tubs");
             bag3 = new StockBag("BT21", 3333, 4, 150, "Birthday");
-            containerA = new Container();
-            containerB = new Container();
+            containerA = new Container('A');
+            containerB = new Container('B');
             containerA.addItem(bag3);
             containerB.addItem(bag2);
             containerB.addItem(bag1);
@@ -44,10 +44,11 @@ public class WriterTest {
     @Test
     void testWriteContainers() {
         // save containers to file
+        testWriter.nextContainer('A');
         for (int i = 1; i <= containerA.getSize(); i++) {
             testWriter.write(containerA.getItem(i));
         }
-        testWriter.nextContainer();
+        testWriter.nextContainer('B');
         for (int i = 1; i <= containerB.getSize(); i++) {
             testWriter.write(containerB.getItem(i));
         }

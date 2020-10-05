@@ -21,7 +21,7 @@ public class ContainerTest {
 
     @BeforeEach
     void runBefore() {
-        container = new Container();
+        container = new Container('A');
         bag = new StockBag("BareBear", 1111, 2, 200, "Toilets");
         bag1 = new StockBag("Space Matter", 2222, 3, 100, "Basketball");
         bag2 = new StockBag("Dino", 3333, 1, 50, "Bowler Roller");
@@ -126,12 +126,12 @@ public class ContainerTest {
     @Test
     void testToString() {
         try {
-            containerInfo = "";
+            containerInfo = "Container A:<br>";
             assertEquals(containerInfo, container.toString());
 
             container.addItem(bag);
             container.addItem(bag1);
-            containerInfo = "2222|1111";
+            containerInfo = "Container A:<br>2222|1111";
             assertEquals(containerInfo, container.toString());
 
             container.addItem(bag2);
@@ -140,11 +140,11 @@ public class ContainerTest {
             container.addItem(bag5);
             container.addItem(bag6);
             container.addItem(bag7);
-            containerInfo = "8888|7777<br>6666|5555|4444<br>3333|2222|1111";
+            containerInfo = "Container A:<br>8888|7777<br>6666|5555|4444<br>3333|2222|1111";
             assertEquals(containerInfo, container.toString());
 
             container.addItem(bag8);
-            containerInfo = "9999|8888|7777<br>6666|5555|4444<br>3333|2222|1111";
+            containerInfo = "Container A:<br>9999|8888|7777<br>6666|5555|4444<br>3333|2222|1111";
             assertEquals(containerInfo, container.toString());
         } catch (DuplicateIDException e) {
             fail("Duplicate bags added");

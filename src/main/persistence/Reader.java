@@ -4,6 +4,7 @@ package persistence;
 
 import model.Container;
 import model.Exceptions.DuplicateIDException;
+import model.StockBag;
 import model.Storable;
 
 import java.io.File;
@@ -37,24 +38,28 @@ public class Reader {
     // EFFECTS: returns a list of containers parsed from list of strings
     // where each string contains data for one account
     private static ArrayList<Container> parseContent(List<String> fileContent) {
-        Container containerA = new Container();
-        Container containerB = new Container();
-        ArrayList<Container> containers = new ArrayList<>(Arrays.asList(containerA, containerB));
-        boolean flag = false;
+        // Container containerA = new Container();     // TODO: ...
+        // Container containerB = new Container();     // TODO: ...
+        // ArrayList<Container> containers = new ArrayList<>(Arrays.asList(containerA, containerB));
+        ArrayList<Container> containers = new ArrayList<>();
+        // boolean flag = false;
+        Container temp = null;
 
         try {
             for (String line : fileContent) {
-                if (line.equals("ContainerB")) {
-                    flag = true;
+                if (line.charAt(0) == '#' || temp == null) {
+                    if (temp != null) {
+                        containers.add(temp);
+                    }
+                    temp = new Container(line.charAt(2));
+                    System.out.println(line.charAt(2));
                 } else {
                     ArrayList<String> lineComponents = splitString(line);
-
-                    if (!flag) {
-                        containerA.addItem(parseStorable(lineComponents));
-                    } else {
-                        containerB.addItem(parseStorable(lineComponents));
-                    }
+                    temp.addItem(parseStorable(lineComponents));
                 }
+            }
+            if (temp != null) {
+                containers.add(temp);
             }
             return containers;
         } catch (DuplicateIDException e) {
@@ -79,7 +84,6 @@ public class Reader {
         int size = Integer.parseInt(components.get(2));
         int quantity = Integer.parseInt(components.get(3));
         String game = components.get(4);
-        return new Storable(description, number, size, quantity, game) {
-        };
+        return new StockBag(description, number, size, quantity, game);
     }
 }

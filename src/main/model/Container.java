@@ -4,6 +4,7 @@ package model;
 import model.Exceptions.DuplicateIDException;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 // Represents a storage container that stores stock bags.
 // The container holds up to 9 bags in a stack of 3 bags and 3 rows and stacks (3x3).
@@ -14,13 +15,15 @@ import java.util.ArrayList;
 public class Container {
     private static final int MAX_SIZE = 9;
 
+    private char containerID;
     private ArrayList<Storable> storage;
     private int indexOfItem;
     private String container;
     private ArrayList<Integer> listOfIDs;
 
     // EFFECTS: creates a new empty container
-    public Container() {
+    public Container(char id) {
+        containerID = id;
         storage = new ArrayList<>();
         listOfIDs = new ArrayList<>();
     }
@@ -98,7 +101,7 @@ public class Container {
 
     // EFFECTS: prints a view of a container
     public String toString() {
-        container = "";
+        container = "Container " + containerID + ":<br>";
         int limit = storage.size() % 3;
 
         if (storage.size() == 9) {
@@ -140,5 +143,27 @@ public class Container {
     // EFFECTS: returns number of storage bags in container
     public int getSize() {
         return storage.size();
+    }
+
+    // EFFECTS: returns container ID
+    public char getID() {
+        return containerID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Container container = (Container) o;
+        return containerID == container.containerID;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(containerID);
     }
 }
